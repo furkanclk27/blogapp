@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/head") %>
+</head>
+<body>
+    <%- include("../partials/nav") %>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <form method="post">
+                    <input type="hidden" name="blogid" value="<%= blog.blogid %>">
+                    <div class="row mb-3">
+                        <label for="baslik" class="col-sm-2 col-form-label">Başlık</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="baslik" name="baslik" value="<%= blog.baslik %>">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="baslik" class="col-sm-2 col-form-label">Açıklama</label>
+                        <div class="col-sm-8">
+                            <textarea name="aciklama" class="form-control" rows="10"><%= blog.aciklama %></textarea>
+                            
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="resim" class="col-sm-2 col-form-label">Resim</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="baslik" name="resim" value="<%= blog.resim %>">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="kategori" class="col-sm-2 col-form-label">Kategori</label>
+                        <div class="col-sm-8">
+                            <select name="kategori" id="kategori" class="form-select">
+                                <option value="-1" selected>Seçiniz</option>
+                                <% categories.forEach(category => { %>
+                                    <% if (category.categoryid == blog.categoryid) { %>
+                                        <option value="<%= category.categoryid %>" selected><%= category.name %></option>
+                                     <% } else { %>
+                                        <option value="<%= category.categoryid %>"><%= category.name %></option>
+                                    <% } %>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-8 offset-sm-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="anasayfa" name="anasayfa" <%= blog.anasayfa?"checked":"" %>>
+                                <label for="anasayfa" class="form-check-label">
+                                    Anasayfa
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-8 offset-sm-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="onay" name="onay" <%= blog.onay?"checked":"" %>>
+                                <label for="onay" class="form-check-label">
+                                    Onay
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-8 offset-sm-2">
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

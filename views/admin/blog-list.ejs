@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/head") %>
+</head>
+<body>
+    <%- include("../partials/nav") %>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <% if (action != "undefined" && action=="edit") { %>
+                    <div class="alert alert-info">
+                        <%= blogid %> ID numaralı blog güncellendi!
+                    </div>
+                <% } %>
+
+                <% if (action != "undefined" && action=="create") { %>
+                    <div class="alert alert-info">
+                        Blog eklendi!
+                    </div>
+                <% } %>
+
+                <% if (action != "undefined" && action=="delete") { %>
+                    <div class="alert alert-info">
+                        Blog silindi!
+                    </div>
+                <% } %>
+
+                <% if (action != "undefined" && action=="catcreate") { %>
+                    <div class="alert alert-info">
+                        Kategori eklendi!
+                    </div>
+                <% } %>
+
+                <% if (action != "undefined" && action=="catdelete") { %>
+                    <div class="alert alert-info">
+                        Kategori silindi!
+                    </div>
+                <% } %>
+
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">ID</th>
+                            <th style="width: 200px;">Resim</th>
+                            <th>Başlık</th>
+                            <th style="width: 150px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% blogs.forEach(blog => { %>
+                         <tr>
+                            <td><%= blog.blogid %></td>
+                            <td>
+                                <img src="/static/images/<%= blog.resim %>" class="img-fluid" alt="">
+                            </td>
+                            <td><%= blog.baslik %></td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="/admin/blogs/<%= blog.blogid %>">Edit</a>
+                                <a class="btn btn-sm btn-danger" href="/admin/blog/delete/<%= blog.blogid %>">Delete</a>
+                            </td>
+                            
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
