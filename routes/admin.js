@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const db=require("../data/db");
+const imageUpload = require("../helpers/image-upload");
 
 router.get("/blog/delete/:blogid", async function(req,res){
     const blogid = req.params.blogid;
@@ -76,17 +77,19 @@ router.get("/blog/create", async function(req, res){
     }
 });
 
-router.post("/blog/create", async function(req, res) {
+router.post("/blog/create", imageUpload.upload.single("resim"), async function(req, res) {
     const baslik = req.body.baslik;
     const aciklama = req.body.aciklama;
-    const resim = req.body.resim;
+    const resim = req.file.filename;
     const kategori = req.body.kategori;
     const anasayfa = req.body.anasayfa == "on" ? 1:0;
     const onay = req.body.onay == "on" ? 1:0;
 
     try{
+        
         await db.execute("INSERT INTO blog(baslik, aciklama, resim, anasayfa, onay, categoryid) VALUES (?,?,?,?,?,?)",
         [baslik, aciklama, resim, anasayfa, onay, kategori]);
+        console.log(baslik, aciklama, resim, anasayfa, onay, kategori);
         res.redirect("/admin/blogs?action=create");
     }
 
@@ -171,7 +174,7 @@ router.get("/category/create", async function(req, res){
 
 router.post("/category/create", async function(req, res) {
     const name = req.body.name;
-    
+
     try{
         await db.execute("INSERT INTO category(name) VALUES(?)",
         [name]);
@@ -226,7 +229,7 @@ router.post("/categories/:categoryid", async function(req, res){
 
 router.get("/categories", async function(req, res){
     const categoryid = req.params.categoryid;
-
+    
     try{
         const [categories, ] = await db.execute("select * from category");
         res.render("admin/category-list", {
