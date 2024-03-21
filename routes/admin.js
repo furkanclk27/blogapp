@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
 
 const db=require("../data/db");
 const imageUpload = require("../helpers/image-upload");
@@ -79,6 +80,7 @@ router.get("/blog/create", async function(req, res){
 
 router.post("/blog/create", imageUpload.upload.single("resim"), async function(req, res) {
     const baslik = req.body.baslik;
+    const altbaslik = req.body.altbaslik;
     const aciklama = req.body.aciklama;
     const resim = req.file.filename;
     const kategori = req.body.kategori;
@@ -87,9 +89,9 @@ router.post("/blog/create", imageUpload.upload.single("resim"), async function(r
 
     try{
         
-        await db.execute("INSERT INTO blog(baslik, aciklama, resim, anasayfa, onay, categoryid) VALUES (?,?,?,?,?,?)",
+        await db.execute("INSERT INTO blog(baslik, altbaslik, aciklama, resim, anasayfa, onay, categoryid) VALUES (?,?,?,?,?,?,?)",
         [baslik, aciklama, resim, anasayfa, onay, kategori]);
-        console.log(baslik, aciklama, resim, anasayfa, onay, kategori);
+        console.log(baslik, altbaslik, aciklama, resim, anasayfa, onay, kategori);
         res.redirect("/admin/blogs?action=create");
     }
 
@@ -123,18 +125,29 @@ router.get("/blogs/:blogid", async function(req, res){
    
 });
 
-router.post("/blogs/:blogid", async function(req, res){
+router.post("/blogs/:blogid", imageUpload.upload.single("resim"), async function(req, res){
     const blogid = req.body.blogid;
     const baslik = req.body.baslik;
+    const altbaslik = req.body.altbaslik;
     const aciklama = req.body.aciklama;
-    const resim = req.body.resim;
+    let resim = req.body.resim;
+
+    if(req.file){
+        resim = req.file.filename;
+
+        fs.unlink("./public/images/" + req.body.resim, err=>{
+            console.log(err);
+        });
+
+    }
+
     const anasayfa = req.body.anasayfa=="on"? 1:0;
     const onay = req.body.onay=="on"? 1:0;
     const kategoriid = req.body.kategori;
 
     try{
-        await db.execute("UPDATE blog SET baslik=?, aciklama=?, resim=?, anasayfa=?, onay=?, categoryid=? WHERE blogid=?", 
-        [baslik, aciklama, resim, anasayfa, onay, kategoriid, blogid]);
+        await db.execute("UPDATE blog SET baslik=?, altbaslik=?, aciklama=?, resim=?, anasayfa=?, onay=?, categoryid=? WHERE blogid=?", 
+        [baslik, altbaslik, aciklama, resim, anasayfa, onay, kategoriid, blogid]);
         res.redirect("/admin/blogs?action=edit&blogid=" + blogid);
     }
     catch(err){
@@ -142,22 +155,6 @@ router.post("/blogs/:blogid", async function(req, res){
     }
 
 
-});
-
-router.get("/blogs", async function(req, res){
-    try{
-        const [blogs, ] = await db.execute("select blogid, baslik, resim from blog");
-        res.render("admin/blog-list",{
-            title: "Blog List",
-            blogs: blogs,
-            action: req.query.action,
-            blogid: req.query.blogid
-        });
-    }
-    catch(err){
-        console.log(err);
-    }
-    
 });
 
 //Categories
@@ -227,6 +224,22 @@ router.post("/categories/:categoryid", async function(req, res){
 
 });
 
+router.get("/blogs", async function(req, res){
+    try{
+        const [blogs, ] = await db.execute("select blogid, baslik, altbaslik, resim from blog");
+        res.render("admin/blog-list",{
+            title: "Blog List",
+            blogs: blogs,
+            action: req.query.action,
+            blogid: req.query.blogid
+        });
+    }
+    catch(err){
+        console.log(err);
+    }
+    
+});
+
 router.get("/categories", async function(req, res){
     const categoryid = req.params.categoryid;
     
@@ -245,7 +258,6 @@ router.get("/categories", async function(req, res){
 
    
 });
-
 
 
 module.exports = router;

@@ -16,9 +16,15 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="baslik" class="col-sm-2 col-form-label">Açıklama</label>
+                        <label for="altbaslik" class="col-sm-2 col-form-label">Alt Başlık</label>
                         <div class="col-sm-8">
-                            <textarea name="aciklama" class="form-control" rows="10"></textarea>
+                            <textarea name="altbaslik" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="aciklama" class="col-sm-2 col-form-label">Açıklama</label>
+                        <div class="col-sm-8">
+                            <textarea id="editor" name="aciklama" class="form-control" rows="10"></textarea>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -67,5 +73,7 @@
             </div>
         </div>
     </div>
+
+    <%- include("../partials/html-editor") %>
 </body>
 </html>
