@@ -5,6 +5,9 @@ const fs = require("fs");
 const db=require("../data/db");
 const imageUpload = require("../helpers/image-upload");
 
+const Blog = require("../models/blog");
+const Category = require("../models/category");
+
 router.get("/blog/delete/:blogid", async function(req,res){
     const blogid = req.params.blogid;
 
@@ -66,8 +69,7 @@ router.post("/category/delete/:categoryid", async function(req, res){
 
 router.get("/blog/create", async function(req, res){
     try{
-        const [categories, ] = await db.execute("select * from category");
-
+        const categories = await Category.findAll();
         res.render("admin/blog-create", {
             title: "Add Blog",
             categories: categories
@@ -88,10 +90,15 @@ router.post("/blog/create", imageUpload.upload.single("resim"), async function(r
     const onay = req.body.onay == "on" ? 1:0;
 
     try{
-        
-        await db.execute("INSERT INTO blog(baslik, altbaslik, aciklama, resim, anasayfa, onay, categoryid) VALUES (?,?,?,?,?,?,?)",
-        [baslik, aciklama, resim, anasayfa, onay, kategori]);
-        console.log(baslik, altbaslik, aciklama, resim, anasayfa, onay, kategori);
+        await Blog.create({
+            baslik: baslik,
+            altbaslik: altbaslik,
+            aciklama: aciklama,
+            resim: resim,
+            anasayfa: anasayfa,
+            onay: onay,
+            categoryid: kategori
+        });
         res.redirect("/admin/blogs?action=create");
     }
 
@@ -173,8 +180,7 @@ router.post("/category/create", async function(req, res) {
     const name = req.body.name;
 
     try{
-        await db.execute("INSERT INTO category(name) VALUES(?)",
-        [name]);
+        await Category.create({name: name});
         res.redirect("/admin/categories?action=catcreate");
     }
 
@@ -226,7 +232,8 @@ router.post("/categories/:categoryid", async function(req, res){
 
 router.get("/blogs", async function(req, res){
     try{
-        const [blogs, ] = await db.execute("select blogid, baslik, altbaslik, resim from blog");
+        const blogs = await Blog.findAll({attributes:["blogid", "baslik", "altbaslik", "resim"]});
+        console.log(blogs);
         res.render("admin/blog-list",{
             title: "Blog List",
             blogs: blogs,
@@ -241,10 +248,11 @@ router.get("/blogs", async function(req, res){
 });
 
 router.get("/categories", async function(req, res){
-    const categoryid = req.params.categoryid;
-    
     try{
-        const [categories, ] = await db.execute("select * from category");
+        const categories = await Category.findAll();
+
+        console.log(categories);
+
         res.render("admin/category-list", {
             title:"category-list",
             categories: categories,
@@ -258,6 +266,7 @@ router.get("/categories", async function(req, res){
 
    
 });
+
 
 
 module.exports = router;
