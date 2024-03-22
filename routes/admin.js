@@ -2,23 +2,26 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 
-const db=require("../data/db");
 const imageUpload = require("../helpers/image-upload");
 
 const Blog = require("../models/blog");
 const Category = require("../models/category");
 
+//Blog Delete
 router.get("/blog/delete/:blogid", async function(req,res){
     const blogid = req.params.blogid;
 
     try{
-        const [blogs, ] = await db.execute("select * from blog where blogid=?", [blogid]);
-        const blog = blogs[0];
+        const blog = await Blog.findByPk(blogid);
 
-        res.render("admin/blog-delete", {
-            title:"Delete Blog",
-            blog: blog
-        })
+        if(blog){
+            res.render("admin/blog-delete", {
+                title:"Delete Blog",
+                blog: blog
+            });
+        }
+        res.redirect("/admin/blogs");
+
     }
     catch(err){
         console.log(err);
@@ -29,21 +32,24 @@ router.post("/blog/delete/:blogid", async function(req, res){
     const blogid = req.body.blogid;
 
     try{
-        await db.execute("DELETE from blog WHERE blogid=?",[blogid]);
-        res.redirect("/admin/blogs?action=delete");
+        await Blog.destroy({//Practical
+            where:{
+                blogid: blogid
+            }
+        });
+        return res.redirect("/admin/blogs?action=delete");       
     }
     catch(err){
         console.log(err);
     }
 });
 
-//Categories Delete
+//Category Delete
 router.get("/category/delete/:categoryid", async function(req,res){
     const categoryid = req.params.categoryid;
 
     try{
-        const [categories, ] = await db.execute("select * from category where categoryid=?", [categoryid]);
-        const category = categories[0];
+        const category = await Category.findByPk(categoryid);
 
         res.render("admin/category-delete", {
             title:"Delete Category",
@@ -59,7 +65,11 @@ router.post("/category/delete/:categoryid", async function(req, res){
     const categoryid = req.body.categoryid;
 
     try{
-        await db.execute("DELETE from category WHERE categoryid=?",[categoryid]);
+        await Category.destroy({
+            where:{
+                categoryid: categoryid
+            }
+        });
         res.redirect("/admin/categories?action=catdelete");
     }
     catch(err){
@@ -67,6 +77,7 @@ router.post("/category/delete/:categoryid", async function(req, res){
     }
 });
 
+//Blog Create
 router.get("/blog/create", async function(req, res){
     try{
         const categories = await Category.findAll();
@@ -108,18 +119,18 @@ router.post("/blog/create", imageUpload.upload.single("resim"), async function(r
 
 });
 
+//Blog Details
 router.get("/blogs/:blogid", async function(req, res){
     const blogid = req.params.blogid;
 
     try{
-        const [blogs, ] = await db.execute("select * from blog where blogid=?", [blogid]);
-        const [categories, ] = await db.execute("select * from category");
-        const blog = blogs[0];
+        const blog = await Blog.findByPk(blogid);
+        const categories = await Category.findAll();
 
         if(blog){
             return res.render("admin/blog-edit", {
-                title:blog.baslik,
-                blog: blog,
+                title:blog.dataValues.baslik,
+                blog: blog.dataValues,
                 categories: categories
             }); 
         }
@@ -153,9 +164,21 @@ router.post("/blogs/:blogid", imageUpload.upload.single("resim"), async function
     const kategoriid = req.body.kategori;
 
     try{
-        await db.execute("UPDATE blog SET baslik=?, altbaslik=?, aciklama=?, resim=?, anasayfa=?, onay=?, categoryid=? WHERE blogid=?", 
-        [baslik, altbaslik, aciklama, resim, anasayfa, onay, kategoriid, blogid]);
-        res.redirect("/admin/blogs?action=edit&blogid=" + blogid);
+        const blog = await Blog.findByPk(blogid);
+        if(blog){
+            blog.set({
+                baslik:baslik,
+                altbaslik: altbaslik,
+                aciklama: aciklama,
+                resim: resim,
+                anasayfa: anasayfa,
+                onay: onay,
+                categoryid: kategoriid
+            });
+            await blog.save();
+            return res.redirect("/admin/blogs?action=edit&blogid=" + blogid);
+        }
+            res.redirect("/admin/blogs");
     }
     catch(err){
         console.log(err);
@@ -164,7 +187,7 @@ router.post("/blogs/:blogid", imageUpload.upload.single("resim"), async function
 
 });
 
-//Categories
+//Category Create
 router.get("/category/create", async function(req, res){
     try{
             res.render("admin/category-create", {
@@ -190,17 +213,17 @@ router.post("/category/create", async function(req, res) {
 
 });
 
-
+//Category Details
 router.get("/categories/:categoryid", async function(req, res){
     const categoryid = req.params.categoryid;
 
     try{
-        const [categories, ] = await db.execute("select * from category where categoryid=?",[categoryid]);
-        const category = categories[0];
+        const category = await Category.findByPk(categoryid);
+
         if(category){
             return res.render("admin/category-edit", {
-                title:category.name,
-                category:category
+                title:category.dataValues.name,
+                category:category.dataValues
         });
 
         }
@@ -218,10 +241,13 @@ router.post("/categories/:categoryid", async function(req, res){
     const categoryid = req.body.categoryid;
     const name = req.body.name;
 
-
     try{
-        await db.execute("UPDATE category SET name=? WHERE categoryid=?", [name, categoryid]);
-        res.redirect("/admin/categories?action=edit&categoryid=" + categoryid);
+        await Category.update({ name: name}, {//Practical
+            where: {
+                categoryid: categoryid
+            }
+        });
+        return res.redirect("/admin/categories?action=edit&categoryid=" + categoryid);
     }
     catch(err){
         console.log(err);
@@ -230,6 +256,7 @@ router.post("/categories/:categoryid", async function(req, res){
 
 });
 
+//All Blogs
 router.get("/blogs", async function(req, res){
     try{
         const blogs = await Blog.findAll({attributes:["blogid", "baslik", "altbaslik", "resim"]});
@@ -247,6 +274,7 @@ router.get("/blogs", async function(req, res){
     
 });
 
+//All Categories
 router.get("/categories", async function(req, res){
     try{
         const categories = await Category.findAll();
