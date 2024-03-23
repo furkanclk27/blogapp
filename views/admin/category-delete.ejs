@@ -13,7 +13,7 @@
                         <b><%= category.name %></b> isimli kategori kaydını silmek istiyor musunuz?
                     </p>
                     <form method="post">
-                        <input type="hidden" name="categoryid" value="<%= category.categoryid %>">
+                        <input type="hidden" name="categoryid" value="<%= category.id %>">
                         <button class="btn btn-danger" type="submit">Evet</button>
                         <a href="/admin/categories" class="btn btn-primary">Vazgeç</a>
                     </form>

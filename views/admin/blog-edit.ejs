@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-md-12 mt-3">
                 <form method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="blogid" value="<%= blog.blogid %>">
+                    <input type="hidden" name="blogid" value="<%= blog.id %>">
                     <input type="hidden" name="resim" value="<%= blog.resim %>">
                     <div class="row mb-3">
                         <label for="baslik" class="col-sm-2 col-form-label">Başlık</label>
@@ -43,12 +43,12 @@
                                 <option value="-1" selected>Seçiniz</option>
                                 <% categories.forEach(category => { %>
                                     <% if (category.categoryid == blog.categoryid) { %>
-                                        <option value="<%= category.categoryid %>" selected><%= category.name %></option>
-                                     <% } else { %>
-                                        <option value="<%= category.categoryid %>"><%= category.name %></option>
-                                    <% } %>
+                                        <option value="<%= category.dataValues.id %>" selected><%= category.dataValues.name %></option>
+                                        <% } else { %>
+                                            <option value="<%= category.id %>"><%= category.name %></option>
+                                            <% } %>
                                 <% }) %>
-                            </select>      
+                            </select>                  
                         </div>
                     </div>
                     <div class="row mb-3">

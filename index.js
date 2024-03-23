@@ -24,12 +24,12 @@ const Blog = require("./models/blog");
     //One-to-Many
     Category.hasMany(Blog, { //One category has many blogs
         foreignKey: {
-            name: "categoryId",
+            name: 'categoryId',
             allowNull: false
         }
     }); 
-    
-    Blog.belongsTo(Category); //Blog has one category
+
+    Blog.belongsTo(Category); //Each Blog has one category
 
 //Applying - Sync
 
