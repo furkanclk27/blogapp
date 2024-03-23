@@ -15,6 +15,30 @@ app.use("/static", express.static(path.join(__dirname, "public")));
 app.use("/admin", adminRoutes);//kisaltma yaptik
 app.use(userRoutes);
 
+const sequelize = require("./data/db");
+const dummyData = require("./data/dummy-data");
+const Category = require("./models/category");
+const Blog = require("./models/blog");
+
+//Relationships
+    //One-to-Many
+    Category.hasMany(Blog, { //One category has many blogs
+        foreignKey: {
+            name: "categoryId",
+            allowNull: false
+        }
+    }); 
+    
+    Blog.belongsTo(Category); //Blog has one category
+
+//Applying - Sync
+
+//IIFE - Async Blok
+(async () =>{
+    await sequelize.sync({ force: true });
+    await dummyData();
+})();
+
 app.listen(3000, function(){
     console.log("Listening on port 3000");
 })
