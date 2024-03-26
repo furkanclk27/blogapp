@@ -211,11 +211,15 @@ exports.get_category_edit = async function(req, res){
 
     try{
         const category = await Category.findByPk(categoryid);
+        const blogs = await category.getBlogs();//This brings all blogs that belongs to same category
+        const countBlog = await category.countBlogs();//This brings the number of selected category
 
         if(category){
             return res.render("admin/category-edit", {
                 title:category.dataValues.name,
-                category:category.dataValues
+                category:category.dataValues,
+                blogs: blogs,
+                countBlog: countBlog
         });
 
         }
