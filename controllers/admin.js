@@ -254,7 +254,13 @@ exports.post_category_edit = async function(req, res){
 
 exports.get_blogs = async function(req, res){
     try{
-        const blogs = await Blog.findAll({attributes:["id", "baslik", "altbaslik", "resim"]});
+        const blogs = await Blog.findAll({
+            attributes:["id", "baslik", "altbaslik", "resim"],
+            include: {
+                model: Category,
+                attributes: ["name"] // Just bring the name
+            }
+        });
         res.render("admin/blog-list",{
             title: "Blog List",
             blogs: blogs,
