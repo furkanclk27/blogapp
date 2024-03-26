@@ -17,8 +17,7 @@ async function populate(){
             aciklama: "En popüler programlama dili olan Javascript programlama dilini artık Node.js sayesinde server tabanlı bir dil olarak kullanabilirsin.Kurs sonunda sadece Javascript programlama dilini kullanarak Fullstack bir web geliştirici olmak istiyorsan hemen kursa katılmalısın!Üstelik 30 gün iade garantisiyle!",
             resim: "5.jpg",
             anasayfa: true,
-            onay: true,
-            categoryId: 1
+            onay: true
         });
         
         await Blog.create({
@@ -27,8 +26,7 @@ async function populate(){
             aciklama: "Son zamanların en popüler frontend kütüphanesi React 'i baştan sona uygulamalı projelerle öğrenmeye ne dersiniz? React; facebook firması tarafından geliştirilen ve kullanıcı arayüzlerini kolaylıkla oluşturmamıza olanak sağlayan oldukça güzel bir Javascript kütüphanesidir.",
             resim: "7.jpg",
             anasayfa: true,
-            onay: true,
-            categoryId: 1
+            onay: true
         });
 
         await Blog.create({
@@ -37,8 +35,7 @@ async function populate(){
             aciklama: "Son zamanların en popüler frontend kütüphanesi React 'i baştan sona uygulamalı projelerle öğrenmeye ne dersiniz? React; facebook firması tarafından geliştirilen ve kullanıcı arayüzlerini kolaylıkla oluşturmamıza olanak sağlayan oldukça güzel bir Javascript kütüphanesidir.",
             resim: "7.jpg",
             anasayfa: true,
-            onay: true,
-            categoryId: 2
+            onay: true
         });
 
         await Blog.create({
@@ -47,8 +44,7 @@ async function populate(){
             aciklama: "Son zamanların en popüler frontend kütüphanesi React 'i baştan sona uygulamalı projelerle öğrenmeye ne dersiniz? React; facebook firması tarafından geliştirilen ve kullanıcı arayüzlerini kolaylıkla oluşturmamıza olanak sağlayan oldukça güzel bir Javascript kütüphanesidir.",
             resim: "7.jpg",
             anasayfa: true,
-            onay: true,
-            categoryId: 3
+            onay: true
         });
     }
 }

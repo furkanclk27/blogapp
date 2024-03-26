@@ -20,24 +20,15 @@ const dummyData = require("./data/dummy-data");
 const Category = require("./models/category");
 const Blog = require("./models/blog");
 
-//Relationships
-    //One-to-Many
-    Category.hasMany(Blog, { //One category has many blogs
-        foreignKey: {
-            name: 'categoryId',
-            allowNull: true
-        },
-        onDelete: "SET NULL",
-        onUpdate: "SET NULL"
-    }); 
-
-    Blog.belongsTo(Category); //Each Blog has one category
+Blog.belongsToMany(Category, {through: "blogCategories"});
+Category.belongsToMany(Blog, {through: "blogCategories"});
+    
 
 //Applying - Sync
 
 //IIFE - Async Blok
 (async () =>{
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: true });
     await dummyData();
 })();
 

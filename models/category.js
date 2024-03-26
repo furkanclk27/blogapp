@@ -8,8 +8,6 @@ const Category = sequelize.define("category", {
         allowNull: false
     }
 
-},{
-    timestamps: false
 });
 
 
