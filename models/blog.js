@@ -7,6 +7,10 @@ const Blog = sequelize.define("blog", {
         type: DataTypes.STRING,
         allowNull: false
     },
+    url: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     altbaslik: {
         type: DataTypes.STRING,
         allowNull: false

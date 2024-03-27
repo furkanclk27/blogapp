@@ -1,5 +1,8 @@
 const Blog = require("../models/blog");
 const Category = require("../models/category");
+const { Op } = require("sequelize");
+const sequelize = require("../data/db");
+const slugField = require("../helpers/slugfield");
 
 const fs = require("fs");
 
@@ -98,12 +101,12 @@ exports.post_blog_create = async function(req, res) {
     try{
         await Blog.create({
             baslik: baslik,
+            url: slugField(baslik),
             altbaslik: altbaslik,
             aciklama: aciklama,
             resim: resim,
             anasayfa: anasayfa,
-            onay: onay,
-            categoryId: kategori
+            onay: onay
         });
         res.redirect("/admin/blogs?action=create");
     }
@@ -143,7 +146,15 @@ exports.get_blog_edit = async function(req, res){
     const blogid = req.params.blogid;
 
     try{
-        const blog = await Blog.findByPk(blogid);
+        const blog = await Blog.findOne({
+            where:{
+                id: blogid
+            },
+            include: {
+                model: Category,
+                attributes: ["id"]
+            }
+        });
         const categories = await Category.findAll();
 
         if(blog){
@@ -167,6 +178,9 @@ exports.post_blog_edit = async function(req, res){
     const baslik = req.body.baslik;
     const altbaslik = req.body.altbaslik;
     const aciklama = req.body.aciklama;
+    const kategoriIds = req.body.categories;
+    const url = req.body.url;
+
     let resim = req.body.resim;
 
     if(req.file){
@@ -180,10 +194,18 @@ exports.post_blog_edit = async function(req, res){
 
     const anasayfa = req.body.anasayfa=="on"? 1:0;
     const onay = req.body.onay=="on"? 1:0;
-    const kategoriid = req.body.kategori;
 
     try{
-        const blog = await Blog.findByPk(blogid);
+        const blog = await Blog.findOne({
+            where:{
+                id: blogid
+            },
+            include: {
+                model: Category,
+                attributes: ["id"]
+            }
+        });
+
         if(blog){
             blog.set({
                 baslik:baslik,
@@ -192,8 +214,25 @@ exports.post_blog_edit = async function(req, res){
                 resim: resim,
                 anasayfa: anasayfa,
                 onay: onay,
-                categoryId: kategoriid
+                url: url
             });
+
+            if(kategoriIds == undefined){
+                await blog.removeCategories(blog.categories);
+            }
+
+            else {
+                await blog.removeCategories(blog.categories);
+                const selectedCategories = await Category.findAll({
+                    where:{
+                        id: {
+                            [Op.in]: kategoriIds //Admin selects category(ies) for the blog
+                        }
+                    }
+                });
+                await blog.addCategories(selectedCategories); //Admin sends selected categories to db for the blog
+            }
+
             await blog.save();
             return res.redirect("/admin/blogs?action=edit&blogid=" + blogid);
         }
@@ -204,6 +243,14 @@ exports.post_blog_edit = async function(req, res){
     }
 
 
+}
+
+exports.get_category_remove = async function (req, res){
+    const blogid = req.body.blogid;
+    const categoryid = req.body.categoryid;
+
+    await sequelize.query(`DELETE FROM blogCategories WHERE blogId = ${blogid} AND categoryId = ${categoryid}`);
+    res.redirect("/admin/categories/" + categoryid);
 }
 
 exports.get_category_edit = async function(req, res){

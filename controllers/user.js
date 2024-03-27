@@ -4,12 +4,15 @@ const Category = require("../models/category");
 const { Op } = require("sequelize");
 
 exports.blogs_by_category = async function(req,res){
-    const id = req.params.categoryid;
+    const slug = req.params.slug;
     try{
         const blogs = await Blog.findAll({
             where:{
-                categoryId: id,
                 onay: true
+            },
+            include: {
+                model: Category,
+                where:{url: slug}
             },
             raw: true
         });
@@ -19,7 +22,7 @@ exports.blogs_by_category = async function(req,res){
             title: "Tüm Kurslar",
             blogs: blogs,
             categories: categories,
-            selectedCategory: id
+            selectedCategory: slug
         })
     }
     catch(err){
@@ -28,11 +31,11 @@ exports.blogs_by_category = async function(req,res){
 }
 
 exports.blogs_details = async function(req, res){
-    const id = req.params.blogid;
+    const slug = req.params.slug;
     try{
         const blog = await Blog.findOne({
             where: {
-                id: id
+                url: slug
             },
             raw: true
         });

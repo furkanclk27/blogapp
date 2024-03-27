@@ -59,7 +59,9 @@
                                 <%= blog.dataValues.baslik %>
                             </td>
                             <td>
-                                <%= blog.category.name %>
+                                <% blog.categories.forEach(category => { %>
+                                    <li><%= category.name %></li>
+                                    <% }) %>              
                             </td>
                             <td>
                                 <a class="btn btn-sm btn-primary" href="/admin/blogs/<%= blog.dataValues.id %>">Edit</a>

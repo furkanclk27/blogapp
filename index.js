@@ -22,9 +22,6 @@ const Blog = require("./models/blog");
 
 Blog.belongsToMany(Category, {through: "blogCategories"});
 Category.belongsToMany(Blog, {through: "blogCategories"});
-    
-
-//Applying - Sync
 
 //IIFE - Async Blok
 (async () =>{
