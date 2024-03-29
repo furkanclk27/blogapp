@@ -3,7 +3,6 @@ const Category = require("../models/category");
 
 const { Op } = require("sequelize");
 
-
 exports.blogs_details = async function(req, res){
     const slug = req.params.slug;
     try{
