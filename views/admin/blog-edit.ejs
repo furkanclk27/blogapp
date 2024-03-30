@@ -6,50 +6,48 @@
 <body>
     <%- include("../partials/nav") %>
     <div class="container mt-3">
-        <form method="post" enctype="multipart/form-data">
-
+        <form method="post" enctype="multipart/form-data" action="/admin/blogs/<%= blog.id %>?_csrf=<%= csrfToken %>">
             <div class="row my-5 gx-5">
-                    <div class="col-md-10">
-                            <input type="hidden" name="blogid" value="<%= blog.id %>">
-                            <input type="hidden" name="resim" value="<%= blog.resim %>">
-                            <div class="row mb-3">
-                                <label for="baslik" class="col-sm-1 col-form-label">Başlık</label>
-                                <div class="col-sm-11">
-                                    <input type="text" class="form-control" id="baslik" name="baslik" value="<%= blog.baslik %>">
-                                </div>
+                <div class="col-md-10">
+                        
+                        <input type="hidden" name="blogid" value="<%= blog.id %>">
+                        <input type="hidden" name="resim" value="<%= blog.resim %>">
+                        <div class="row mb-3">
+                            <label for="baslik" class="col-sm-1 col-form-label">Başlık</label>
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control" id="baslik" name="baslik" value="<%= blog.baslik %>">
                             </div>
-                            <div class="row mb-3">
-                                <label for="altbaslik" class="col-sm-1 col-form-label">Alt Başlık</label>
-                                <div class="col-sm-11">
-                                    <textarea name="altbaslik" class="form-control" rows="5"><%= blog.altbaslik %></textarea>
-                                </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="altbaslik" class="col-sm-1 col-form-label">Alt Başlık</label>
+                            <div class="col-sm-11">
+                                <textarea name="altbaslik" class="form-control" rows="5"><%= blog.altbaslik %></textarea>
                             </div>
-                            <div class="row mb-3">
-                                <label for="url" class="col-sm-1 col-form-label">Url</label>
-                                <div class="col-sm-11">
-                                    <input type="text" class="form-control" id="url" name="url" value="<%= blog.url %>">
-                                </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="url" class="col-sm-1 col-form-label">Url</label>
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control" id="url" name="url" value="<%= blog.url %>">
                             </div>
-                            <div class="row mb-3">
-                                <label for="aciklama" class="col-sm-1 col-form-label">Açıklama</label>
-                                <div class="col-sm-11">
-                                    <textarea id="editor" name="aciklama" class="form-control" rows="10"><%= blog.aciklama %></textarea>                            
-                                </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="aciklama" class="col-sm-1 col-form-label">Açıklama</label>
+                            <div class="col-sm-11">
+                                <textarea id="editor" name="aciklama" class="form-control" rows="10"><%= blog.aciklama %></textarea>                            
                             </div>
-                            <div class="row mb-3">
-                                <label for="resim" class="col-sm-1 col-form-label">Resim</label>
-                                <div class="col-sm-11">
-                                    <img src="/static/images/<%= blog.resim %>" alt="" width="200">
-                                    <input type="file" class="form-control" id="resim" name="resim">
-                                </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="resim" class="col-sm-1 col-form-label">Resim</label>
+                            <div class="col-sm-11">
+                                <img src="/static/images/<%= blog.resim %>" alt="" width="200">
+                                <input type="file" class="form-control" id="resim" name="resim">
                             </div>
-                    
-                            
-                            <div class="row mb-3">
-                                <div class="col-sm-11 offset-sm-1">
-                                    <button type="submit" class="btn btn-primary">Kaydet</button>
-                                </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-11 offset-sm-1">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
                             </div>
+                        </div>
                     </div>
                     <div class="col-md-2">
                         <div class="row">

@@ -8,7 +8,7 @@
     <div class="container mt-3">
         <div class="row">
             <div class="col-md-12 mt-3">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" action="/admin/blog/create?_csrf=<%= csrfToken %>">
                     <div class="row mb-3">
                         <label for="baslik" class="col-sm-2 col-form-label">Başlık</label>
                         <div class="col-sm-8">

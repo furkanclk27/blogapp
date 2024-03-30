@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-
+const emailService = require("../helpers/send-mail");
+const config = require("../config");
 
 exports.get_register = async function(req, res){
     try{
@@ -26,7 +27,14 @@ exports.post_register = async function(req, res){
             req.session.message = { text: "Bu email adresiyle daha önce bir hesap oluşturulmuş.", class: "warning" };
             return res.redirect("login");
         }
-        await User.create({ fullname: name, email: email, password: hashedPassword });
+        const newUser = await User.create({ fullname: name, email: email, password: hashedPassword });
+
+        emailService.sendMail({
+            from: config.email.from,
+            to: newUser.email,
+            subject: "Hesabınız oluşturuldu.",
+            text: "Hesabınız başarıyla oluşturuldu."
+        });
 
         req.session.message = { text: "Hesabınıza giriş yapabilirsiniz.", class: "success" };
 
@@ -43,7 +51,8 @@ exports.get_login = async function(req, res){
     try{
         return res.render("auth/login", {
             title: "Login",
-            message: message
+            message: message,
+            csrfToken: req.csrfToken()
         });
     }
     catch(err){

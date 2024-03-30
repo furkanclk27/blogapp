@@ -9,6 +9,7 @@
         <div class="row">
             <div class="col-md-12 mt-3"> 
                 <form method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="hidden" name="categoryid" value="<%= category.id %>">
                     <div class="row mb-3">
                         <label for="name" class="col-sm-2 col-form-label">Kategori Adı</label>

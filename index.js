@@ -5,6 +5,7 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const csurf = require("csurf");
 
 //Node Modules
 const path = require("path");
@@ -43,6 +44,7 @@ app.use(session({
 }));
 
 app.use(locals);
+app.use(csurf());
 
 app.use("/libs", express.static(path.join(__dirname, "node_modules")));//Static olarak tanimladik. projede calisirken her zaman erisimi olacak yani public demek
 app.use("/static", express.static(path.join(__dirname, "public")));
